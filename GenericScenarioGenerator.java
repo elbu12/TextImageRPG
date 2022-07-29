@@ -31,6 +31,7 @@ public class GenericScenarioGenerator {
 		add(4, path);
 		
 		add(1, make("You find some old ruins, but nothing of value.", "ruins"));
+		add(1, make("You find a fairy ring.", "fairyRing"));
 	}
 	private GenericScenarioData make(String text, String imageFolderName) {
 		return new GenericScenarioData(text, imageFolderName);

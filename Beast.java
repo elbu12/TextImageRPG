@@ -2,7 +2,7 @@ package main;
 
 public class Beast {
 	private RoomScenario beastRoom;
-	private byte status;	//bear's intentions
+	private byte status;	//beast's intentions
 	private byte message;	//special message
 	private RoomScenario restartingRoom; //where you restart when you die
 	public Beast() {

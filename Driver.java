@@ -8,6 +8,27 @@ import javax.swing.JPanel;
 
 public class Driver{
 	
+	/**
+	 * What if you have to find hidden treasure? Perhaps you find a treasure map?
+	 * 
+	 * You should do something at the party - dance? Talk to someone? Drink?
+	 * 
+	 * What if you save the environment?
+	 * 
+	 * Solve a mystery - for example, you find a strange object or set of such
+	 * objects. What do they do? Who is creating them?
+	 * 
+	 * We can still do a single isolated cottage
+	 * 
+	 * You could make a deal/trade with someone
+	 * 
+	 * Look for treasure in some abandoned/ruined structure
+	 * structure collapses
+	 * You must survive/escape the disaster
+	 * 
+	 * Or possibly a rockslide?
+	 */
+	
 	//Administrative variables
 	private Scenario currentScenario;
 	private Scenario[][] scenarios;
@@ -105,6 +126,14 @@ public class Driver{
 	public static final String PLANT_NAME = "fugbeer";
 	public static final String FRUIT_NAME = "sunfruit";
 	
+	/**
+	 * The party only happens after everything else is
+	 * done. Any variable that would prevent the party
+	 * from happening needs to increment the partyStatus
+	 * variable when appropriate, and partyStatus'
+	 * initial value must be decremented to compensate.
+	 */
+	private int partyStatus = -1;
 	private boolean haveFloweringPlant = false;
 	private boolean haveSword = false;
 	private int fruitsEaten = 0;
@@ -149,7 +178,7 @@ public class Driver{
 				}
 			}
 			public String[] getButtons() {
-				return (status < 2 ? getButton("Pick sone") : NO_BUTTONS);
+				return (status < 2 ? getButton("Pick some") : NO_BUTTONS);
 			}
 
 			public void buttonPressed(int buttonId, Driver driver) {
@@ -321,7 +350,14 @@ public class Driver{
 					status = (haveSword ? 2 : 1);
 					break;
 				case 2:
-					status = (buttonId == 0 ? 3 : 8);
+					if (buttonId == 0) {
+						status = 3;
+						//This must be accomplished to party
+						partyStatus++;
+					}
+					else {
+						status = 8;
+					}
 					break;
 				default:
 					status = 5;
@@ -345,19 +381,14 @@ public class Driver{
 	}
 	/**
 	 * Idea:
-	 * a small castle. If you do not have fruit, a beast will be there,
-	 * blocking your entrance. If you have fruit, the beast will be missing.
-	 * You can then explore, finding a lantern with oil. The beast will then
-	 * hunt you, necessitating escape.
+	 * a small castle. You can explore, finding a lantern with oil. 
+	 * The beast will then hunt you, necessitating escape.
 	 * 
 	 * Rooms:_________________
 	 * tower ___hallway	____ |	tower
 	 * pantry	great hall	||	servant bedroom
 	 * kitchen	great hall	||	master bedroom
 	 * workshop	antechamber	||	study
-	 * 
-	 * If you have the fruit, the monster will follow you, always one room behind,
-	 * unless you backtrack.
 	 */
 	private Scenario castle = null;
 	private BeastScenario courtyard = null;
@@ -448,7 +479,7 @@ public class Driver{
 		castle = castleScenario;
 		return castleScenario;
 	}
-	public BeastScenario getCourtyardScenario(Beast beast) {
+	private BeastScenario getCourtyardScenario(Beast beast) {
 		BeastScenario courtyardScenario = new BeastScenario(0, 0, 7, 7, beast, "You enter the courtyard. It appears empty, other than the many weeds.", "courtyardWithoutBeast") {
 			final Image beastImage = ImageReader.getRandom("courtyardWithBeast");
 			public Image getImage() {
@@ -489,33 +520,33 @@ public class Driver{
 		courtyardScenario.setMapText("courtyard");
 		return courtyardScenario;
 	}
-	public BeastScenario getAntechamberScenario(Beast beast) {
+	private BeastScenario getAntechamberScenario(Beast beast) {
 		BeastScenario antechamberScenario = new BeastScenario(2, 7, 2, 2, beast, "You enter an antechamber.", "antechamber");
 		antechamberScenario.setMapText("antechamber");
 		return antechamberScenario;
 	}
-	public BeastScenario getGreatHallScenario(Beast beast) {
+	private BeastScenario getGreatHallScenario(Beast beast) {
 		BeastScenario greatHallScenario = new BeastScenario(2, 9, 2, 4, beast, "You enter the great hall.", "greatHall");
 		greatHallScenario.setMapText("great hall");
 		return greatHallScenario;
 	}
-	public BeastScenario getWorkshopScenario(Beast beast) {
+	private BeastScenario getWorkshopScenario(Beast beast) {
 		BeastScenario workshopScenario = new BeastScenario(0, 7, 2, 2, beast, "You enter a workshop with some rusty tools.", "workshop");
 		workshopScenario.setMapText("workshop");
 		return workshopScenario;
 	}
-	public BeastScenario getKitchenScenario(Beast beast) {
+	private BeastScenario getKitchenScenario(Beast beast) {
 		BeastScenario scenario = new BeastScenario(0, 9, 2, 2, beast, "You enter a kitchen with some dirty utensils.","kitchen");
 		scenario.setMapText("kitchen");
 		return scenario;
 	}
-	public BeastScenario getPantryScenario(Beast beast) {
+	private BeastScenario getPantryScenario(Beast beast) {
 		BeastScenario scenario = new BeastScenario(0, 11, 2, 2, beast, "You enter a pantry with some spoiled food.", "pantry");
 		scenario.setMapText("pantry");
 		return scenario;
 	}
 	private RandomImageSequence hallwayImages = ImageReader.getAllRandom("hallway");
-	public BeastScenario getNamedHallwayScenario(Beast beast) {
+	private BeastScenario getNamedHallwayScenario(Beast beast) {
 		BeastScenario scenario = new BeastScenario(4, 7, 1, 7, beast, "You enter a hallway.", hallwayImages.get()) {
 			Image beastImage = ImageReader.getRandom("hallwayWithBeast");
 			boolean showBeast = false;
@@ -541,7 +572,7 @@ public class Driver{
 		scenario.setMapText("hallway");
 		return scenario;
 	}
-	public BeastScenario getUnnamedHallwayScenario(Beast beast) {
+	private BeastScenario getUnnamedHallwayScenario(Beast beast) {
 		BeastScenario scenario = new BeastScenario(2, 13, 2, 1, beast, "You enter a hallway.", hallwayImages.get()) {
 			public void updateLabel() {
 				switch (getKnowledge()) {
@@ -562,12 +593,12 @@ public class Driver{
 		return scenario;
 	}
 	private RandomImageSequence towerImages = ImageReader.getAllRandom("staircase");
-	public BeastScenario getTowerScenario(Beast beast, int y, int x, int index) {
+	private BeastScenario getTowerScenario(Beast beast, int y, int x, int index) {
 		BeastScenario scenario = new BeastScenario(y, x, 2, 2, beast, "You reach a staircase.", towerImages.get());
 		scenario.setMapText("stairs " + index);
 		return scenario;
 	}
-	public BeastScenario getStudyScenario(Beast beast) {
+	private BeastScenario getStudyScenario(Beast beast) {
 		BeastScenario scenario = new BeastScenario(5, 7, 2, 2, beast, "You enter a study. Whoever lived here liked books.", "study") {
 			boolean reading= false;
 			final Image bookImage = ImageReader.getRandom("beastBook");
@@ -603,7 +634,7 @@ public class Driver{
 		scenario.setMapText("study");
 		return scenario;
 	}
-	public BeastScenario getServantBedroomScenario(Beast beast) {
+	private BeastScenario getServantBedroomScenario(Beast beast) {
 		BeastScenario scenario = new BeastScenario(5, 11, 2, 2, beast, "You enter a bedroom, probably the servants'.", "bedroom") {
 			final Image lantern = ImageReader.getRandom("lantern");
 			public Image getImage() {
@@ -656,19 +687,19 @@ public class Driver{
 		scenario.setMapText("bedroom 2");
 		return scenario;
 	}
-	public BeastScenario getMasterBedroomScenario(Beast beast) {
+	private BeastScenario getMasterBedroomScenario(Beast beast) {
 		BeastScenario scenario = new BeastScenario(5, 9, 2, 2, beast, "You enter a bedroom, probably the master's.", "masterBedroom");
 		scenario.setMapText("bedroom 1");
 		return scenario;
 	}
-	public BeastScenario getCastleRoofScenario(Beast beast) {
+	private BeastScenario getCastleRoofScenario(Beast beast) {
 		BeastScenario scenario = new BeastScenario(-1, -1, 1, 1, beast, "You reach the castle battlements, overlooking the forest.", "castleRoof");
 		scenario.setMapText("battlements");
 		return scenario;
 	}
 	//end of beast scenarios
 	
-	public Scenario getCaveScenario(int y, int x, boolean[] directions) {
+	private Scenario getCaveScenario(int y, int x, boolean[] directions) {
 		Scenario scenario = new Scenario(y, x, directions){
 			final String[] PROCEED_EXIT = new String[] {"Proceed", "Exit"};
 			final String[] HELP_REFUSE = new String[] {"Help", "Refuse"};
@@ -835,8 +866,8 @@ public class Driver{
 			//0 - arrived
 			//1 - they ask you about injured man
 			//2 - you tell them about injured man
-			//3 - party
-			//4 - return to party
+			//3 - just rescued man
+			//4 - return after rescued man
 
 			final Image[] images = new Image[] {
 					ImageReader.getRandom("village"),
@@ -846,14 +877,14 @@ public class Driver{
 			};
 			public Image getImage() {
 				switch (status) {
-				case 0 :
+				case 0:
 					return images[0];
 				case 1:
 					return images[1];
 				case 2:
 					return images[2];
 				default:
-					return images[3];
+					return (partyStatus == 0 ? images[3] : images[0]);
 				}
 			}
 			public String getMainText() {
@@ -865,9 +896,13 @@ public class Driver{
 				case 2:
 					return "You lead the villagers to the injured man in the cave. Everyone is relieved.";
 				case 3:
-					return "They throw a party to celebrate. You are the guest of honor.";
+					return (partyStatus == 0 ? 
+							"They throw a party to celebrate. You are the guest of honor." :
+							"They decide to throw a party to celebrate. You will be the guest of honor.\nCome back later when the fesitivies have begun.");
 				default:
-					return "You return to the village. Everyone is celebrating.";
+					return (partyStatus == 0 ? 
+							"You return to the village. The party has begun. You are the guest of honor." :
+							"You return to the village. They are still finishing the day's chores and\npreparing for tonight's party.");
 				}
 			}
 			public String[] getButtons() {
@@ -896,7 +931,15 @@ public class Driver{
 			}
 			
 			public boolean[] getDirections() {
-				return (status == 2 ? NO_DIRECTIONS : super.getDirections());
+				switch (status) {
+				case 3:
+				case 4:
+					if (partyStatus == 0) {
+						return NO_DIRECTIONS;
+					}
+				default:
+					return super.getDirections();
+				}
 			}
 			
 			public void reset() {

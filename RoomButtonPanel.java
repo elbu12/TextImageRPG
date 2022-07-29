@@ -1,12 +1,10 @@
 package main;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -68,7 +66,7 @@ public class RoomButtonPanel extends JPanel{
 	public void setButtons(byte direction, ArrayList <RoomScenario> rooms) {
 		Box box = boxes[direction];
 		ArrayList <RoomButton> list = (ArrayList <RoomButton>)(buttonLists[direction]);
-		//Do we have a leftover spacer strut?
+		//Do we have a leftover spacer?
 		boolean placeholder = list.isEmpty();
 		//Remove the placeholder if we will add buttons
 		if (rooms.size() > 0 && placeholder) {
