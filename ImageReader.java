@@ -9,9 +9,6 @@ import javax.imageio.ImageIO;
 public class ImageReader {
 	// gets an image from the img folder
 	public static Image getImage(String name) {
-		if (!name.startsWith("img")){
-			name = "img/" + name;
-		}
 		try {
 			return ImageIO.read(new File(addPrefix(name)));
 		}
