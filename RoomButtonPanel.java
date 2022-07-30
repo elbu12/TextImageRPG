@@ -11,7 +11,6 @@ import javax.swing.JButton;
 
 public class RoomButtonPanel extends JPanel{
 	public static final String DEFAULT_ROOM_BUTTON = "unknown room";
-	public static final int SPACER_STRUT_LENGTH = 12;
 	
 	private Driver driver;
 	private ArrayList[] buttonLists;		//visible buttons
@@ -99,7 +98,7 @@ public class RoomButtonPanel extends JPanel{
 			box.remove(button);
 			extras.push(button);
 		}
-		//Add a placeholder strut if we have no buttons
+		//Add a placeholder if we have no buttons
 		if (rooms.isEmpty() && !placeholder) {
 			box.add(placeholders[direction]);
 		}
