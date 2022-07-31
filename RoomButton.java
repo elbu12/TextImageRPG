@@ -25,5 +25,6 @@ public class RoomButton extends JButton implements ActionListener{
 	public void set(RoomScenario room) {
 		setText(room.getMapText());
 		this.room = room;
+		setVisible(true);
 	}
 }

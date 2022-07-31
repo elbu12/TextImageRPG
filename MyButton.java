@@ -21,5 +21,6 @@ public class MyButton extends JButton implements ActionListener{
 	public void set(String text, int id) {
 		setText(text);
 		this.id = id;
+		setVisible(true);
 	}
 }

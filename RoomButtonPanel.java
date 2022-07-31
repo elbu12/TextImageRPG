@@ -14,7 +14,6 @@ public class RoomButtonPanel extends JPanel{
 	
 	private Driver driver;
 	private ArrayList[] buttonLists;		//visible buttons
-	private ArrayDeque <RoomButton> extras; //extras for recycling
 	private Box[] boxes;					//contain the buttons
 	private JButton[] placeholders;			//spacing
 	public RoomButtonPanel(Driver driver) {
@@ -60,13 +59,12 @@ public class RoomButtonPanel extends JPanel{
 			placeholder.setEnabled(false);
 			box.add(placeholder);
 		}
-		extras = new ArrayDeque <> ();
 	}
 	public void setButtons(byte direction, ArrayList <RoomScenario> rooms) {
 		Box box = boxes[direction];
 		ArrayList <RoomButton> list = (ArrayList <RoomButton>)(buttonLists[direction]);
 		//Do we have a leftover spacer?
-		boolean placeholder = list.isEmpty();
+		boolean placeholder = (list.isEmpty() || !list.get(0).isVisible());
 		//Remove the placeholder if we will add buttons
 		if (rooms.size() > 0 && placeholder) {
 			box.remove(placeholders[direction]);
@@ -78,25 +76,16 @@ public class RoomButtonPanel extends JPanel{
 				//Edit an existing button
 				list.get(i).set(room);
 			}
-			else if (extras.isEmpty()){
+			else {
 				//Create a new one
 				RoomButton button = new RoomButton(room, driver);
-				list.add(button);
-				box.add(button);
-			}
-			else {
-				//Recycle an old one
-				RoomButton button = extras.pop();
-				button.set(room);
 				list.add(button);
 				box.add(button);
 			}
 		}
 		//Remove extras
 		for (int i=list.size()-1; i>=rooms.size(); i--) {
-			RoomButton button = list.remove(i);
-			box.remove(button);
-			extras.push(button);
+			list.get(i).setVisible(false);
 		}
 		//Add a placeholder if we have no buttons
 		if (rooms.isEmpty() && !placeholder) {
